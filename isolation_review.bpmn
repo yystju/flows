@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="isolation_review" name="isolation_review" isExecutable="true">
+    <startEvent id="start" name="开始"></startEvent>
+    <userTask id="doApprovalCheck" name="审批">
+      <extensionElements>
+        <activiti:executionListener event="end" class="org.activiti.engine.impl.bpmn.listener.ScriptExecutionListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[def var1 = "Hello";
+execution.setVariable("approved", false);
+println("-1-" + var1);]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="language">
+            <activiti:string><![CDATA[groovy]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="结果"></exclusiveGateway>
+    <sequenceFlow id="approvalDone" name="审批结束" sourceRef="doApprovalCheck" targetRef="exclusivegateway1"></sequenceFlow>
+    <endEvent id="approvedEnd" name="批准结束">
+      <extensionElements>
+        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.IsolationProcessApprovedEndListener"></activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <endEvent id="rejectEnd" name="驳回结束">
+      <extensionElements>
+        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.IsolationProcessRejectEndListener"></activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="approved" name="批准" sourceRef="exclusivegateway1" targetRef="approvedEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="reject" name="驳回" sourceRef="exclusivegateway1" targetRef="rejectEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="doApproval" name="准备审批" sourceRef="start" targetRef="doApprovalCheck"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_isolation_review">
+    <bpmndi:BPMNPlane bpmnElement="isolation_review" id="BPMNPlane_isolation_review">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="doApprovalCheck" id="BPMNShape_doApprovalCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="250.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="440.0" y="217.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approvedEnd" id="BPMNShape_approvedEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="443.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rejectEnd" id="BPMNShape_rejectEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="443.0" y="320.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="approvalDone" id="BPMNEdge_approvalDone">
+        <omgdi:waypoint x="355.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="440.0" y="237.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="44.0" x="353.0" y="237.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="approved" id="BPMNEdge_approved">
+        <omgdi:waypoint x="460.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="460.0" y="145.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="460.0" y="181.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="reject" id="BPMNEdge_reject">
+        <omgdi:waypoint x="460.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="460.0" y="320.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="460.0" y="279.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="doApproval" id="BPMNEdge_doApproval">
+        <omgdi:waypoint x="155.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="237.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="44.0" x="153.0" y="237.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
