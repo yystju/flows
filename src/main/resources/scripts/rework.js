@@ -5,20 +5,19 @@
  * global variable logger -- the logger...
  */
 
-function init() {
+var init = function () {
 	logger.info('[rework.init]')
 }
 
-function check() {
+var check = function () {
 	logger.info('[rework.check]')
-	execution.setVariable('approval', true)
+	execution.setVariable('approved', true)
 }
 
-function beforeAcceptEnd() {
+var beforeAcceptEnd = function () {
 	logger.info('[rework.beforeAcceptEnd]')
 }
 
-function beforeRejectEnd() {
+var beforeRejectEnd = function () {
 	logger.info('[rework.beforeRejectEnd]')
 }
-

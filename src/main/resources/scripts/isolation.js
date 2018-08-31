@@ -5,8 +5,6 @@
  * global variable logger -- the logger...
  */
 
-logger.info(this)
-
 var init = function () {
 	logger.info('[isolation.init]')
 	logger.info('>> {}', tahara.findByDefinition('isolation', null))
