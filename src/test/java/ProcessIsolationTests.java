@@ -51,12 +51,10 @@ public class ProcessIsolationTests {
 		ProcessInstance processInstance = activitiRule.getRuntimeService().startProcessInstanceByKey("isolation_review", map);
 
 		assertNotNull(processInstance);
-
-//		progressDialog(processInstance);
-
-		showHistory();
 		
 		while(activitiRule.getRuntimeService().createProcessInstanceQuery().active().processInstanceId(processInstance.getId()).count() > 0) {
+			progressDialog(processInstance);
+			
 			List<Task> tasks = activitiRule.getTaskService().createTaskQuery().active().processInstanceId(processInstance.getId()).list();
 
 			for (Task task : tasks) {
@@ -68,8 +66,8 @@ public class ProcessIsolationTests {
 				
 				activitiRule.getTaskService().complete(task.getId(), taskVariables);
 			}
-
-//			progressDialog(processInstance);
+			
+			showHistory();
 		}
 	}
 	

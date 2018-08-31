@@ -12,7 +12,7 @@ var init = function () {
 var check = function () {
 	logger.info('[isolation.check]')
 	
-	var wipno = execution.getValue('wipno')
+	var wipno = execution.getVariable('wipno')
 	
 	logger.info('[isolation.check] wipno : {}', wipno)
 	

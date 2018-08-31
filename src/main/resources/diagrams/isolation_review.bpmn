@@ -87,14 +87,14 @@
         <omgdi:waypoint x="460.0" y="217.0"></omgdi:waypoint>
         <omgdi:waypoint x="460.0" y="145.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="22.0" x="460.0" y="181.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="100.0" x="460.0" y="181.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="reject" id="BPMNEdge_reject">
         <omgdi:waypoint x="460.0" y="257.0"></omgdi:waypoint>
         <omgdi:waypoint x="460.0" y="320.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="22.0" x="460.0" y="279.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="100.0" x="460.0" y="279.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="doApproval" id="BPMNEdge_doApproval">
