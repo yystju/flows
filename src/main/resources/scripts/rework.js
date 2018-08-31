@@ -6,11 +6,19 @@
  */
 
 function init() {
+	logger.info('[rework.init]')
+}
+
+function check() {
+	logger.info('[rework.check]')
+	execution.setVariable('approval', true)
 }
 
 function beforeAcceptEnd() {
+	logger.info('[rework.beforeAcceptEnd]')
 }
 
 function beforeRejectEnd() {
+	logger.info('[rework.beforeRejectEnd]')
 }
 
