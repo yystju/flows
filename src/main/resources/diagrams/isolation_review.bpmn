@@ -3,7 +3,7 @@
   <process id="isolation_review" name="isolation_review" isExecutable="true">
     <startEvent id="start" name="开始">
       <extensionElements>
-        <activiti:executionListener event="start" class="shi.quan.workflow.v2.ScriptExecutionListener">
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[isolation.js]]></activiti:string>
           </activiti:field>
@@ -15,7 +15,7 @@
     </startEvent>
     <userTask id="doApprovalCheck" name="审批">
       <extensionElements>
-        <activiti:executionListener event="end" class="shi.quan.workflow.v2.ScriptExecutionListener">
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[isolation.js]]></activiti:string>
           </activiti:field>
@@ -29,7 +29,7 @@
     <sequenceFlow id="approvalDone" name="审批结束" sourceRef="doApprovalCheck" targetRef="exclusivegateway1"></sequenceFlow>
     <endEvent id="approvedEnd" name="批准结束">
       <extensionElements>
-        <activiti:executionListener event="start" class="shi.quan.workflow.v2.ScriptExecutionListener">
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[isolation.js]]></activiti:string>
           </activiti:field>
@@ -41,7 +41,7 @@
     </endEvent>
     <endEvent id="rejectEnd" name="驳回结束">
       <extensionElements>
-        <activiti:executionListener event="start" class="shi.quan.workflow.v2.ScriptExecutionListener">
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[isolation.js]]></activiti:string>
           </activiti:field>

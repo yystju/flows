@@ -1,4 +1,4 @@
-package shi.quan.workflow.v2;
+package com.taharaiot.mes.workflows.listeners;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,6 +17,8 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.taharaiot.mes.workflows.services.FakeTaharaAPIServiceImpl;
 
 public class ScriptExecutionListener implements ExecutionListener {
 	private static final long serialVersionUID = -3542712693377315182L;
@@ -61,7 +63,7 @@ public class ScriptExecutionListener implements ExecutionListener {
 				bindings.put("execution", execution);
 				bindings.put("logger", logger);
 				
-				bindings.put("tahara", new FakeTaharaAPI()); // Fake...
+				bindings.put("tahara", new FakeTaharaAPIServiceImpl(null)); // Fake...
 				
 				FileReader reader = new FileReader(script);
 				

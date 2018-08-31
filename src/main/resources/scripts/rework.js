@@ -11,7 +11,7 @@ var init = function () {
 
 var check = function () {
 	logger.info('[rework.check]')
-	execution.setVariable('approved', true)
+	execution.setVariable('approved', false)
 }
 
 var beforeAcceptEnd = function () {

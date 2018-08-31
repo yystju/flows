@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="rework_review" name="rework_review" isExecutable="true">
-    <startEvent id="start" name="开始"></startEvent>
+    <startEvent id="start" name="开始">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[rework.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[init]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </startEvent>
     <userTask id="doApprovalCheck" name="审批">
       <extensionElements>
-        <activiti:executionListener event="end" class="org.activiti.engine.impl.bpmn.listener.ScriptExecutionListener">
-          <activiti:field name="script">
-            <activiti:string><![CDATA[def var1 = "Hello";
-execution.setVariable("approved", false);
-println("-1-" + var1);]]></activiti:string>
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[rework.js]]></activiti:string>
           </activiti:field>
-          <activiti:field name="language">
-            <activiti:string><![CDATA[groovy]]></activiti:string>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[check]]></activiti:string>
           </activiti:field>
         </activiti:executionListener>
       </extensionElements>
@@ -20,12 +29,26 @@ println("-1-" + var1);]]></activiti:string>
     <sequenceFlow id="approvalDone" name="审批结束" sourceRef="doApprovalCheck" targetRef="exclusivegateway1"></sequenceFlow>
     <endEvent id="approvedEnd" name="批准结束">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ReworkProcessApprovedEndListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[rework.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[beforeAcceptEnd]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </endEvent>
     <endEvent id="rejectEnd" name="驳回结束">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ReworkProcessRejectEndListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[rework.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[beforeRejectEnd]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </endEvent>
     <sequenceFlow id="approved" name="批准" sourceRef="exclusivegateway1" targetRef="approvedEnd">
@@ -36,8 +59,8 @@ println("-1-" + var1);]]></activiti:string>
     </sequenceFlow>
     <sequenceFlow id="doApproval" name="准备审批" sourceRef="start" targetRef="doApprovalCheck"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_rework_review">
-    <bpmndi:BPMNPlane bpmnElement="rework_review" id="BPMNPlane_rework_review">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_isolation_review">
+    <bpmndi:BPMNPlane bpmnElement="isolation_review" id="BPMNPlane_isolation_review">
       <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
         <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="220.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

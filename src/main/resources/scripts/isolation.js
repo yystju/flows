@@ -7,12 +7,23 @@
 
 var init = function () {
 	logger.info('[isolation.init]')
-	logger.info('>> {}', tahara.findByDefinition('isolation', null))
 }
 
 var check = function () {
 	logger.info('[isolation.check]')
-	execution.setVariable('approved', true)
+	
+	var wipno = execution.getValue('wipno')
+	
+	logger.info('[isolation.check] wipno : {}', wipno)
+	
+	var cnt = tahara
+				.find('quality', 'defectrecord')
+				.eq('wipno', wipno)
+				.count()
+	
+	logger.info('[isolation.check] cnt : {}', cnt)
+				
+	execution.setVariable('approved', cnt > 0)
 }
 
 var beforeAcceptEnd = function () {
