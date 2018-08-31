@@ -9,15 +9,11 @@ logger.info(this)
 
 var init = function () {
 	logger.info('[isolation.init]')
+	logger.info('>> {}', tahara.findByDefinition('isolation', null))
 }
 
 var check = function () {
 	logger.info('[isolation.check]')
-	
-	tahara.findByDefinition('isolation', null).forEach(function(i) {
-		logger.info('[isolation] i : {}', i)
-	})
-	
 	execution.setVariable('approved', true)
 }
 
