@@ -5,24 +5,26 @@
  * global variable logger -- the logger...
  */
 
-function init() {
+logger.info(this)
+
+var init = function () {
 	logger.info('[isolation.init]')
 }
 
-function check() {
+var check = function () {
 	logger.info('[isolation.check]')
 	
-	for(var i in tahara.findByDefinition('isolation', null)) {
+	tahara.findByDefinition('isolation', null).forEach(function(i) {
 		logger.info('[isolation] i : {}', i)
-	}
+	})
 	
-	execution.setVariable('approval', true)
+	execution.setVariable('approved', true)
 }
 
-function beforeAcceptEnd() {
+var beforeAcceptEnd = function () {
 	logger.info('[isolation.beforeAcceptEnd]')
 }
 
-function beforeRejectEnd() {
+var beforeRejectEnd = function () {
 	logger.info('[isolation.beforeRejectEnd]')
 }

@@ -2,14 +2,15 @@ package shi.quan.workflow.v2;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.SimpleScriptContext;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -34,36 +35,48 @@ public class ScriptExecutionListener implements ExecutionListener {
 
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
+		logger.info("[ScriptExecutionListener.notify]");
+		
 		String pathName = (String)scriptPathName.getValue(execution);
 		String function = (String)functionName.getValue(execution);
 
+		logger.info("pathName : {}", pathName);
+		logger.info("function : {}", function);
+		
 		File scriptFolder = new File("./src/main/resources/scripts");
 		
 		File script = new File(scriptFolder, pathName);
 		
 		if(script.exists()) {
-			ScriptEngine engine = scriptEngineManager.getEngineByName("nashorn");
+			logger.info("script : {}", script);
 			
-			Bindings bindings = engine.createBindings();
-			
-			bindings.put("execution", execution);
-			bindings.put("logger", logger);
-			
-			bindings.put("tahara", new TaharaAPISkeletion() {
-				@Override
-				public List<Object> findByDefinition(String definitionName, Map<String, Object> params) {
-					return new ArrayList<Object>();
-				}
-			}); // Fake...
-			
-			FileReader reader = new FileReader(script);
-			
-			engine.eval(reader, bindings);
-			
-			reader.close();
-			
-			Invocable invocable = (Invocable) engine;
-			invocable.invokeFunction(function);
+			try {
+				ScriptEngine engine = scriptEngineManager.getEngineByName("nashorn");
+				Compilable compilable = (Compilable) engine;
+				Invocable invocable = (Invocable) engine;
+				
+				ScriptContext context = new SimpleScriptContext();
+				Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
+				
+				bindings.put("execution", execution);
+				bindings.put("logger", logger);
+				
+				bindings.put("tahara", new FakeTaharaAPI()); // Fake...
+				
+				FileReader reader = new FileReader(script);
+				
+				CompiledScript compiled = compilable.compile(reader);
+				
+				compiled.eval(bindings);
+				
+				reader.close();
+				
+				logger.info("invocable : {}", invocable);
+				engine.setContext(context);
+				invocable.invokeFunction(function, new Object[] {});
+			} catch (Exception ex) {
+				logger.error(ex.getMessage(), ex);
+			}
 		}
 	}
 }
