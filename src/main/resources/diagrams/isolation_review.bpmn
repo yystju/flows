@@ -13,7 +13,7 @@
         </activiti:executionListener>
       </extensionElements>
     </startEvent>
-    <userTask id="doApprovalCheck" name="审批ex" activiti:candidateGroups="ROLE_WORKFLOW_USER" activiti:formKey="../page/workflows/workflowDetails.html">
+    <userTask id="doApprovalCheck" name="审批ex" activiti:candidateGroups="ROLE_WORKFLOW_USER" activiti:formKey="workflows/workflowDetails.html">
       <extensionElements>
         <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
