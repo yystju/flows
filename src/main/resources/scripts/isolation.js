@@ -17,8 +17,8 @@ var check = function () {
 	logger.info('[isolation.check] wipno : {}', wipno)
 	
 	var cnt = tahara
-				.find('quality', 'defectrecord')
-				.eq('wipno', wipno)
+				.find('workflows', 'inbasket')
+				.eq('taskId', execution.getId())
 				.count()
 	
 	logger.info('[isolation.check] cnt : {}', cnt)
