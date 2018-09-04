@@ -13,7 +13,7 @@
         </activiti:executionListener>
       </extensionElements>
     </startEvent>
-    <userTask id="doApprovalCheck" name="审批">
+    <userTask id="doApprovalCheck" name="审批" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <extensionElements>
         <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
@@ -59,8 +59,8 @@
     </sequenceFlow>
     <sequenceFlow id="doApproval" name="准备审批" sourceRef="start" targetRef="doApprovalCheck"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_isolation_review">
-    <bpmndi:BPMNPlane bpmnElement="isolation_review" id="BPMNPlane_isolation_review">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_rework_review">
+    <bpmndi:BPMNPlane bpmnElement="rework_review" id="BPMNPlane_rework_review">
       <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
         <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="220.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
