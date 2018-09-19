@@ -67,4 +67,9 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
         	return this.data;
         }
     }
+
+	@Override
+	public String currentUser() {
+		return "FakeUser";
+	}
 }

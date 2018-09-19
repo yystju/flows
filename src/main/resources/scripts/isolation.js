@@ -10,7 +10,7 @@ var init = function () {
 }
 
 var check = function () {
-	logger.info('[isolation.check]')
+	logger.info('[isolation.check] currentuser : {}', tahara.currentUser())
 	
 	var wipno = execution.getVariable('wipno')
 	
@@ -28,6 +28,14 @@ var check = function () {
 
 var beforeAcceptEnd = function () {
 	logger.info('[isolation.beforeAcceptEnd]')
+	tahara
+		.find('quality', 'defectrecord')
+		.eq('id', 1)
+		.list()
+		.forEach(function(entity) {
+			//...
+			tahara.save(entity);
+		})
 }
 
 var beforeRejectEnd = function () {

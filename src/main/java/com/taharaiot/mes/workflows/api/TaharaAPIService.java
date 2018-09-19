@@ -3,6 +3,8 @@ package com.taharaiot.mes.workflows.api;
 import java.util.List;
 
 public interface TaharaAPIService {
+	String currentUser();
+	
 	Criteria find(String pluginName, String modelName);
 	Object save(String pluginName, String modelName, Object entity);
 	
