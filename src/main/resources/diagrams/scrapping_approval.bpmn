@@ -4,7 +4,14 @@
     <documentation>Sunlight Scrapping Approval Process</documentation>
     <startEvent id="start" name="开始">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ScrapProcessStartListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[scrapping_approval.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[init]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </startEvent>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
@@ -25,7 +32,14 @@
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <endEvent id="typeBApprovedEnd" name="B类批准结束">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ScrapProcessApprovedEndListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[scrapping_approval.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[beforeTypeBApprovedEnd]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </endEvent>
     <sequenceFlow id="flow7" name="批准" sourceRef="exclusivegateway2" targetRef="typeBApprovedEnd">
@@ -36,7 +50,14 @@
     <userTask id="secondLevelReview" name="二级结单授权(经理)" activiti:candidateGroups="ROLE_DEFECT_TYPEA_LEVEL2_AUTHORIZER"></userTask>
     <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ScrapProcessThresholdCalculationListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[scrapping_approval.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[thresholdCheck]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </exclusiveGateway>
     <sequenceFlow id="flow10" sourceRef="firstLevelReview" targetRef="exclusivegateway3"></sequenceFlow>
@@ -49,7 +70,14 @@
     </sequenceFlow>
     <endEvent id="typeAEnd" name="A类批准结束">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ScrapProcessApprovedEndListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[scrapping_approval.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[beforeTypeAApprovedEnd]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </endEvent>
     <sequenceFlow id="flow18" name="未达到阈值" sourceRef="exclusivegateway4" targetRef="typeAEnd">
@@ -59,7 +87,14 @@
     <sequenceFlow id="flow22" sourceRef="secondLevelReview" targetRef="typeAEnd"></sequenceFlow>
     <endEvent id="rejectEnd" name="A或B类不批准结束">
       <extensionElements>
-        <activiti:executionListener event="end" class="com.tahara.quality.workflows.listeners.ScrapProcessRejectedEndListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[scrapping_approval.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[beforeRejectEnd]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </endEvent>
     <sequenceFlow id="flow23" name="不批准" sourceRef="exclusivegateway3" targetRef="rejectEnd">
@@ -84,7 +119,14 @@
     <sequenceFlow id="flow38" sourceRef="parallelgateway1" targetRef="reviewRole7"></sequenceFlow>
     <parallelGateway id="parallelgateway2" name="Parallel Gateway">
       <extensionElements>
-        <activiti:executionListener event="start" class="com.tahara.quality.workflows.listeners.ScrapProcessCounterSignApprovalCheckListener"></activiti:executionListener>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[scrapping_approval.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[counterApproveCheck]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
       </extensionElements>
     </parallelGateway>
     <sequenceFlow id="flow39" sourceRef="reviewRole7" targetRef="parallelgateway2"></sequenceFlow>

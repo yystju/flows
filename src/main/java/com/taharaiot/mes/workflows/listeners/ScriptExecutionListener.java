@@ -53,6 +53,8 @@ public class ScriptExecutionListener implements ExecutionListener {
 			logger.info("script : {}", script);
 			
 			try {
+				long start = System.currentTimeMillis();
+				
 				ScriptEngine engine = scriptEngineManager.getEngineByName("nashorn");
 				Compilable compilable = (Compilable) engine;
 				Invocable invocable = (Invocable) engine;
@@ -76,6 +78,8 @@ public class ScriptExecutionListener implements ExecutionListener {
 				logger.info("invocable : {}", invocable);
 				engine.setContext(context);
 				invocable.invokeFunction(function, new Object[] {});
+				
+				logger.info("TOTAL INTERVAL : {}", System.currentTimeMillis() - start);
 			} catch (Exception ex) {
 				logger.error(ex.getMessage(), ex);
 			}

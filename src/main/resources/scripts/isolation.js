@@ -34,7 +34,7 @@ var beforeAcceptEnd = function () {
 		.list()
 		.forEach(function(entity) {
 			//...
-			tahara.save(entity);
+			tahara.save(entity)
 		})
 }
 
