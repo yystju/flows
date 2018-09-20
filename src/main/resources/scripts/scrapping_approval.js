@@ -18,8 +18,8 @@ var thresholdCheck = function () {
 	logger.info('[scrapping_approval.thresholdCheck] wipno : {}', wipno)
 	
 	var cnt = tahara
-				.find('quality', 'defectrecord')
-				.eq('discoveredby', tahara.currentUser())
+				.find('workflows', 'inbasket')
+				.eq('owner', tahara.currentUser())
 				.count()
 	
 	logger.info('[scrapping_approval.thresholdCheck] cnt : {}', cnt)
@@ -36,8 +36,8 @@ var counterApproveCheck = function () {
 	logger.info('[scrapping_approval.counterApproveCheck] wipno : {}', wipno)
 	
 	var cnt = tahara
-				.find('quality', 'defectrecord')
-				.eq('discoveredby', tahara.currentUser())
+				.find('workflows', 'inbasket')
+				.eq('owner', tahara.currentUser())
 				.count()
 	
 	logger.info('[scrapping_approval.counterApproveCheck] cnt : {}', cnt)
@@ -48,8 +48,8 @@ var counterApproveCheck = function () {
 var beforeTypeBApprovedEnd = function () {
 	logger.info('[scrapping_approval.beforeAcceptEnd]')
 	tahara
-		.find('quality', 'defectrecord')
-		.eq('id', 1)
+		.find('workflows', 'inbasket')
+		.eq('owner', tahara.currentUser())
 		.list()
 		.forEach(function(entity) {
 			//...
@@ -60,8 +60,8 @@ var beforeTypeBApprovedEnd = function () {
 var beforeTypeAApprovedEnd = function () {
 	logger.info('[scrapping_approval.beforeAcceptEnd]')
 	tahara
-		.find('quality', 'defectrecord')
-		.eq('id', 1)
+		.find('workflows', 'inbasket')
+		.eq('owner', tahara.currentUser())
 		.list()
 		.forEach(function(entity) {
 			//...
