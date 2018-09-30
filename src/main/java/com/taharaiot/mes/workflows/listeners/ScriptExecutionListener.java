@@ -15,8 +15,10 @@ import javax.script.SimpleScriptContext;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
+import org.codehaus.groovy.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.taharaiot.mes.workflows.services.FakeTaharaAPIServiceImpl;
 
@@ -32,15 +34,19 @@ public class ScriptExecutionListener implements ExecutionListener {
 	private Expression functionName;
 	
 	public ScriptExecutionListener() {
-		
+		logger.info("[<ScriptExecutionListener.init>]");
 	}
 
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
-		logger.info("[ScriptExecutionListener.notify]");
+		logger.info("[ScriptExecutionListener.notify] event : {}", execution.getEventName());
 		
-		String pathName = (String)scriptPathName.getValue(execution);
-		String function = (String)functionName.getValue(execution);
+		String pathName = scriptPathName != null ? (String)scriptPathName.getValue(execution) : null;
+		String function = functionName != null ? (String)functionName.getValue(execution) : null;
+		
+		if(StringUtils.isEmpty(function)) {
+			function = execution.getCurrentActivityId();
+		}
 
 		logger.info("pathName : {}", pathName);
 		logger.info("function : {}", function);
@@ -65,7 +71,7 @@ public class ScriptExecutionListener implements ExecutionListener {
 				bindings.put("execution", execution);
 				bindings.put("logger", logger);
 				
-				bindings.put("tahara", new FakeTaharaAPIServiceImpl(null)); // Fake...
+				bindings.put("tahara", new FakeTaharaAPIServiceImpl()); // Fake...
 				
 				FileReader reader = new FileReader(script);
 				
@@ -77,6 +83,7 @@ public class ScriptExecutionListener implements ExecutionListener {
 				
 				logger.info("invocable : {}", invocable);
 				engine.setContext(context);
+				
 				invocable.invokeFunction(function, new Object[] {});
 				
 				logger.info("TOTAL INTERVAL : {}", System.currentTimeMillis() - start);

@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="general_process" name="general_process" isExecutable="true">
+    <startEvent id="start" name="开始">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="functionName">
+            <activiti:string><![CDATA[init]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </startEvent>
+    <userTask id="firstlevel_approval_task" name="一级审批批准">
+      <documentation>TODO: 
+1. 修改 “生产主管” 所对应的组。
+2. 修改formkey.</documentation>
+    </userTask>
+    <exclusiveGateway id="approval_type_gateway" name="类型判断"></exclusiveGateway>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="approval_type_gateway"></sequenceFlow>
+    <sequenceFlow id="flow_scrapping" name="报废审批" sourceRef="approval_type_gateway" targetRef="firstlevel_approval_task">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${'scrapping' == type}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="isolation_approval_role2_task" name="角色2审批"></userTask>
+    <exclusiveGateway id="firstlevel_approval_result_gateway" name="一级审批是否通过">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow_isolation" name="隔离审批" sourceRef="approval_type_gateway" targetRef="isolation_review_fork_parallel_gateway">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type == 'isolation'}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="rework_approval_role1_task" name="返工角色1审批"></userTask>
+    <sequenceFlow id="flow_rework" name="返工审批" sourceRef="approval_type_gateway" targetRef="rework_review_fork_parallel_gateway">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type == 'rework'}]]></conditionExpression>
+    </sequenceFlow>
+    <parallelGateway id="isolation_review_fork_parallel_gateway" name="Parallel Gateway"></parallelGateway>
+    <userTask id="isolation_approval_role1_task" name="角色1审批"></userTask>
+    <sequenceFlow id="flow2" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role1_task"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role2_task"></sequenceFlow>
+    <parallelGateway id="rework_review_fork_parallel_gateway" name="Parallel Gateway"></parallelGateway>
+    <userTask id="rework_approval_role2_task" name="返工角色2审批"></userTask>
+    <sequenceFlow id="flow4" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role1_task"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role2_task"></sequenceFlow>
+    <userTask id="secondlevel_approval_task" name="二级审批批准">
+      <documentation>TODO: 
+1. 修改 “指定部门经理” 所对应的组。
+2. 修改formkey.</documentation>
+    </userTask>
+    <parallelGateway id="isolation_review_join_parallel_gateway" name="Parallel Gateway"></parallelGateway>
+    <parallelGateway id="rework_review_join_parallel_gateway" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow6" sourceRef="isolation_approval_role2_task" targetRef="isolation_review_join_parallel_gateway"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="isolation_approval_role1_task" targetRef="isolation_review_join_parallel_gateway"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="rework_approval_role1_task" targetRef="rework_review_join_parallel_gateway"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="rework_approval_role2_task" targetRef="rework_review_join_parallel_gateway"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="firstlevel_approval_task" targetRef="firstlevel_approval_result_gateway"></sequenceFlow>
+    <userTask id="thirdlevel_approval_task" name="三级审批批准">
+      <documentation>TODO: 
+1. 修改 “指定副总” 所对应的组。
+2. 修改formkey.</documentation>
+    </userTask>
+    <exclusiveGateway id="secondlevel_approval_result_gateway" name="二级审批是否通过">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow12" sourceRef="secondlevel_approval_task" targetRef="secondlevel_approval_result_gateway"></sequenceFlow>
+    <sequenceFlow id="flow_secondlevel_approved" name="通过" sourceRef="secondlevel_approval_result_gateway" targetRef="thirdlevel_trigger_gateway">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${secondlevelapproval == true}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="firstlevel_reject_end" name="一级审批未通过">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow_firstlevel_reject" name="未通过" sourceRef="firstlevel_approval_result_gateway" targetRef="firstlevel_reject_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${firstlevelapproval == false}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="firstlevel_accepted_end" name="一级审批批准结束">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <exclusiveGateway id="secondlevel_trigger_gateway" name="是否触发二级审批">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow_firstlevel_approved" name="通过" sourceRef="firstlevel_approval_result_gateway" targetRef="secondlevel_trigger_gateway">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${firstlevelapproval == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow_secondlevel_triggerred" name="触发" sourceRef="secondlevel_trigger_gateway" targetRef="secondlevel_approval_task">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${secondleveltriggerred == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow_secondlevel_donot_triggerred" name="未触发" sourceRef="secondlevel_trigger_gateway" targetRef="firstlevel_accepted_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${secondleveltriggerred == false}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="secondlevel_reject_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow_secondlevel_reject" name="未通过" sourceRef="secondlevel_approval_result_gateway" targetRef="secondlevel_reject_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${secondlevelapproval == false}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="thirdlevel_trigger_gateway" name="Exclusive Gateway">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow_thirdlevel_triggerred" name="触发" sourceRef="thirdlevel_trigger_gateway" targetRef="thirdlevel_approval_task">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${thirdleveltriggerred == true}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="secondlevel_accepted_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow_thirdlevel_donot_triggerred" name="未触发" sourceRef="thirdlevel_trigger_gateway" targetRef="secondlevel_accepted_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${thirdleveltriggerred == false}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="thirdlevel_approval_result_gateway" name="Exclusive Gateway">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow17" sourceRef="thirdlevel_approval_task" targetRef="thirdlevel_approval_result_gateway"></sequenceFlow>
+    <endEvent id="thirdlevel_accepted_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow_thirlevel_approved" name="通过" sourceRef="thirdlevel_approval_result_gateway" targetRef="thirdlevel_accepted_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${thirdlevelapproval == true}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="thirdlevel_reject_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow_thirlevel_reject" name="未通过" sourceRef="thirdlevel_approval_result_gateway" targetRef="thirdlevel_reject_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${thirdlevelapproval == false}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="isolation_approval_result_gateway">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow18" sourceRef="isolation_review_join_parallel_gateway" targetRef="isolation_approval_result_gateway"></sequenceFlow>
+    <endEvent id="isolation_reject_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow19" name="未通过" sourceRef="isolation_approval_result_gateway" targetRef="isolation_reject_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isoliationapproval == false}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="isolation_accepted_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow20" name="通过" sourceRef="isolation_approval_result_gateway" targetRef="isolation_accepted_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isoliationapproval == true}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="rework_approval_result_gateway" name="Exclusive Gateway">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="flow21" sourceRef="rework_review_join_parallel_gateway" targetRef="rework_approval_result_gateway"></sequenceFlow>
+    <endEvent id="rework_reject_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow22" name="未通过" sourceRef="rework_approval_result_gateway" targetRef="rework_reject_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reworkapproval == false}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="rework_accepted_end" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow23" name="通过" sourceRef="rework_approval_result_gateway" targetRef="rework_accepted_end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reworkapproval == true}]]></conditionExpression>
+    </sequenceFlow>
+    <textAnnotation id="textannotation2">
+      <text>一级审批未批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation3">
+      <text>一级审批批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation4">
+      <text>二级审批未批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation5">
+      <text>二级审批批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation6">
+      <text>三级审批未批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation7">
+      <text>三级审批批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation8">
+      <text>注: 必须所有审批角色都做出审批才会向下推动。</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation9">
+      <text>隔离批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation10">
+      <text>隔离未批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation11">
+      <text>返工未批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation12">
+      <text>返工批准结束</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation13">
+      <text>流程开始</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation14">
+      <text>流程变量列表：
+    type — 流程类型。取值: ‘scrapping’, ‘isolation’, ‘rework’
+    firstlevelapproval — 一级审批结果。取值: true, false
+    secondleveltriggerred — 二级审批是否触发。取值: true, false
+    secondlevelapproval — 二级审批结果。取值: true, false
+    thirdleveltriggerred — 三级审批是否触发。取值: true, false
+    thirdlevelapproval — 三级审批结果。 取值: true, false
+    isoliationapproval — 隔离审批结果。取值: true, false
+    reworkapproval — 反工审批结果。取值: true, false
+</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation15">
+      <text>注: 必须所有审批角色都做出审批才会向下推动。</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_general_process">
+    <bpmndi:BPMNPlane bpmnElement="general_process" id="BPMNPlane_general_process">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstlevel_approval_task" id="BPMNShape_firstlevel_approval_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="65.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approval_type_gateway" id="BPMNShape_approval_type_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_approval_role2_task" id="BPMNShape_isolation_approval_role2_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="790.0" y="374.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstlevel_approval_result_gateway" id="BPMNShape_firstlevel_approval_result_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="388.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_approval_role1_task" id="BPMNShape_rework_approval_role1_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="1316.0" y="374.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_review_fork_parallel_gateway" id="BPMNShape_isolation_review_fork_parallel_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="750.0" y="279.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_approval_role1_task" id="BPMNShape_isolation_approval_role1_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="646.0" y="374.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_review_fork_parallel_gateway" id="BPMNShape_rework_review_fork_parallel_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="1420.0" y="279.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_approval_role2_task" id="BPMNShape_rework_approval_role2_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="1460.0" y="374.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondlevel_approval_task" id="BPMNShape_secondlevel_approval_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="65.0" y="567.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_review_join_parallel_gateway" id="BPMNShape_isolation_review_join_parallel_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="750.0" y="477.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_review_join_parallel_gateway" id="BPMNShape_rework_review_join_parallel_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="1420.0" y="477.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdlevel_approval_task" id="BPMNShape_thirdlevel_approval_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="65.0" y="860.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondlevel_approval_result_gateway" id="BPMNShape_secondlevel_approval_result_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="677.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstlevel_reject_end" id="BPMNShape_firstlevel_reject_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="216.0" y="391.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstlevel_accepted_end" id="BPMNShape_firstlevel_accepted_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="216.0" y="480.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondlevel_trigger_gateway" id="BPMNShape_secondlevel_trigger_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="477.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondlevel_reject_end" id="BPMNShape_secondlevel_reject_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="216.0" y="680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdlevel_trigger_gateway" id="BPMNShape_thirdlevel_trigger_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="770.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondlevel_accepted_end" id="BPMNShape_secondlevel_accepted_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="216.0" y="773.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdlevel_approval_result_gateway" id="BPMNShape_thirdlevel_approval_result_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="960.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdlevel_accepted_end" id="BPMNShape_thirdlevel_accepted_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="1040.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdlevel_reject_end" id="BPMNShape_thirdlevel_reject_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="216.0" y="963.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_approval_result_gateway" id="BPMNShape_isolation_approval_result_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="750.0" y="574.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_reject_end" id="BPMNShape_isolation_reject_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="646.0" y="577.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_accepted_end" id="BPMNShape_isolation_accepted_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="753.0" y="680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_approval_result_gateway" id="BPMNShape_rework_approval_result_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="1420.0" y="574.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_reject_end" id="BPMNShape_rework_reject_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="1530.0" y="577.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rework_accepted_end" id="BPMNShape_rework_accepted_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="1423.0" y="680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation2" id="BPMNShape_textannotation2">
+        <omgdc:Bounds height="50.0" width="121.0" x="260.0" y="384.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation3" id="BPMNShape_textannotation3">
+        <omgdc:Bounds height="50.0" width="100.0" x="260.0" y="473.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation4" id="BPMNShape_textannotation4">
+        <omgdc:Bounds height="50.0" width="123.0" x="259.0" y="673.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation5" id="BPMNShape_textannotation5">
+        <omgdc:Bounds height="50.0" width="100.0" x="260.0" y="766.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation6" id="BPMNShape_textannotation6">
+        <omgdc:Bounds height="50.0" width="111.0" x="260.0" y="956.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation7" id="BPMNShape_textannotation7">
+        <omgdc:Bounds height="50.0" width="100.0" x="260.0" y="1033.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation8" id="BPMNShape_textannotation8">
+        <omgdc:Bounds height="50.0" width="101.0" x="820.0" y="501.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation9" id="BPMNShape_textannotation9">
+        <omgdc:Bounds height="50.0" width="100.0" x="793.0" y="673.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation10" id="BPMNShape_textannotation10">
+        <omgdc:Bounds height="50.0" width="100.0" x="547.0" y="570.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation11" id="BPMNShape_textannotation11">
+        <omgdc:Bounds height="50.0" width="100.0" x="1590.0" y="570.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation12" id="BPMNShape_textannotation12">
+        <omgdc:Bounds height="50.0" width="100.0" x="1464.0" y="673.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation13" id="BPMNShape_textannotation13">
+        <omgdc:Bounds height="50.0" width="100.0" x="151.0" y="53.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation14" id="BPMNShape_textannotation14">
+        <omgdc:Bounds height="145.0" width="331.0" x="1130.0" y="24.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation15" id="BPMNShape_textannotation15">
+        <omgdc:Bounds height="50.0" width="101.0" x="1490.0" y="501.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="117.0" y="95.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_scrapping" id="BPMNEdge_flow_scrapping">
+        <omgdi:waypoint x="117.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="280.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="44.0" x="117.0" y="219.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_isolation" id="BPMNEdge_flow_isolation">
+        <omgdi:waypoint x="137.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="772.0" y="179.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="279.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="44.0" x="349.0" y="186.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_rework" id="BPMNEdge_flow_rework">
+        <omgdi:waypoint x="137.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1440.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1440.0" y="279.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="44.0" x="962.0" y="185.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="750.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="698.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="698.0" y="374.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="790.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="842.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="842.0" y="374.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="1420.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1368.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1368.0" y="374.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="1460.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1512.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1512.0" y="374.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="842.0" y="429.0"></omgdi:waypoint>
+        <omgdi:waypoint x="842.0" y="497.0"></omgdi:waypoint>
+        <omgdi:waypoint x="790.0" y="497.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="698.0" y="429.0"></omgdi:waypoint>
+        <omgdi:waypoint x="698.0" y="497.0"></omgdi:waypoint>
+        <omgdi:waypoint x="750.0" y="497.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="1368.0" y="429.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1368.0" y="497.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1420.0" y="497.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="1512.0" y="429.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1512.0" y="497.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1460.0" y="497.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="117.0" y="335.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="388.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="117.0" y="622.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="677.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_secondlevel_approved" id="BPMNEdge_flow_secondlevel_approved">
+        <omgdi:waypoint x="117.0" y="717.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="770.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="717.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_firstlevel_reject" id="BPMNEdge_flow_firstlevel_reject">
+        <omgdi:waypoint x="137.0" y="408.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="408.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="137.0" y="408.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_firstlevel_approved" id="BPMNEdge_flow_firstlevel_approved">
+        <omgdi:waypoint x="117.0" y="428.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="477.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="428.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_secondlevel_triggerred" id="BPMNEdge_flow_secondlevel_triggerred">
+        <omgdi:waypoint x="117.0" y="517.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="567.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="517.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_secondlevel_donot_triggerred" id="BPMNEdge_flow_secondlevel_donot_triggerred">
+        <omgdi:waypoint x="137.0" y="497.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="497.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="137.0" y="497.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_secondlevel_reject" id="BPMNEdge_flow_secondlevel_reject">
+        <omgdi:waypoint x="137.0" y="697.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="697.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="137.0" y="697.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_thirdlevel_triggerred" id="BPMNEdge_flow_thirdlevel_triggerred">
+        <omgdi:waypoint x="117.0" y="810.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="860.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="810.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_thirdlevel_donot_triggerred" id="BPMNEdge_flow_thirdlevel_donot_triggerred">
+        <omgdi:waypoint x="137.0" y="790.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="790.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="137.0" y="790.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="117.0" y="915.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="960.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_thirlevel_approved" id="BPMNEdge_flow_thirlevel_approved">
+        <omgdi:waypoint x="117.0" y="1000.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="1040.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="1000.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_thirlevel_reject" id="BPMNEdge_flow_thirlevel_reject">
+        <omgdi:waypoint x="137.0" y="980.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="980.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="137.0" y="980.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="770.0" y="517.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="574.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="750.0" y="594.0"></omgdi:waypoint>
+        <omgdi:waypoint x="681.0" y="594.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="701.0" y="596.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="770.0" y="614.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="770.0" y="614.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="1440.0" y="517.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1440.0" y="574.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+        <omgdi:waypoint x="1460.0" y="594.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1530.0" y="594.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="33.0" x="1460.0" y="594.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+        <omgdi:waypoint x="1440.0" y="614.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1440.0" y="680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="22.0" x="1440.0" y="614.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

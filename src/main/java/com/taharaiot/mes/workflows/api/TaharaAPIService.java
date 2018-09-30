@@ -18,6 +18,7 @@ public interface TaharaAPIService {
         Criteria between(String key, Object value1, Object value2);
         Criteria belongs2(String key, String pluginIdentifier, String modelName, long id);
         int count();
-        List<Object> find();
+        List<Object> list();
+        Object uniqueResult();
 	}
 }
