@@ -146,54 +146,64 @@ var rework_approval_result_gateway = function() {
 var firstlevel_reject_end = function() {
 	logger.info('[general_process.firstlevel_reject_end]')
 	finalizeForRejection()
+	finalize()
 }
 
 var firstlevel_accepted_end = function() {
 	logger.info('[general_process.firstlevel_accepted_end]')
 	doScrapping()
 	finalizeForApproved()
+	finalize()
 }
 
 var secondlevel_reject_end = function() {
 	logger.info('[general_process.secondlevel_reject_end]')
 	finalizeForRejection()
+	finalize()
 }
 
 var secondlevel_accepted_end = function() {
 	logger.info('[general_process.secondlevel_accepted_end]')
 	doScrapping()
 	finalizeForApproved()
+	finalize()
 }
 
 var thirdlevel_reject_end = function() {
 	logger.info('[general_process.thirdlevel_reject_end]')
 	finalizeForRejection()
+	finalize()
 }
 
 var thirdlevel_accepted_end = function() {
 	logger.info('[general_process.thirdlevel_accepted_end]')
 	doScrapping()
 	finalizeForApproved()
+	finalize()
 }
 
 var isolation_reject_end = function() {
 	logger.info('[general_process.isolation_reject_end]')
 	finalizeForRejection()
+	finalize()
 }
 
 var isolation_accepted_end = function() {
 	logger.info('[general_process.isolation_accepted_end]')
 	finalizeForApproved()
+	finalize()
 }
 
 var rework_reject_end = function() {
 	logger.info('[general_process.rework_reject_end]')
 	finalizeForRejection()
+	finalize()
 }
 
 var rework_accepted_end = function() {
 	logger.info('[general_process.rework_accepted_end]')
 	finalizeForApproved()
+	finalize()
 }
 
 //-------------------- BUZZ ACTIONS -------------------------
@@ -212,7 +222,7 @@ var finalizeForRejection = function() {
 	//更新隔离报废一览审批状态为“未通过”
 }
 
-var finalizeForApproved = function() {
+var finalize = function() {
 	logger.info('[general_process.finalizeForApproved]')
 	//删除审批流ApprovalProcess
 	//写入审批履历ApprovalHistory
