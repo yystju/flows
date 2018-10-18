@@ -180,4 +180,24 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 	public String currentUser() {
 		return "user1";
 	}
+	
+	public static class FakeEntity {
+		private HashMap<String, Object> data;
+		private String pluginName;
+		private String modelName;
+		
+		public FakeEntity(String pluginName, String modelName) {
+			this.pluginName = pluginName;
+			this.modelName = modelName;
+		}
+		
+		public void setField(String name, Object value) {
+			this.data.put(name, value);
+		}
+	}
+
+	@Override
+	public Object create(String pluginName, String modelName) {
+		return new FakeEntity(pluginName, modelName);
+	}
 }

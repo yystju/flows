@@ -29,10 +29,8 @@ var init = function () {
 	logger.info('type : {}', type)
 	
 	execution.setVariable('type', type)
-		
-	var dd = tahara.find(PLUGIN, DEFINITION)
 	
-	var entity = dd.create();
+	var entity = tahara.create(PLUGIN, DEFINITION);
 	
 	entity.setField("processId", processId);
 	entity.setField("var1", isolation);
