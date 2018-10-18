@@ -38,7 +38,7 @@ var init = function () {
 		
 	logger.info('entity : {}', entity)
 	
-	dd.save(entity);
+	tahara.save(entity);
 }
 
 //-------------------- GATEWAYS -------------------------
