@@ -7,8 +7,8 @@
 
 //-------------------- INITIALIZATION -------------------------
 
-var PLUGIN = 'quality';
-var DEFINITION = 'approvalprocess';
+var PLUGIN = 'workflows';
+var DEFINITION = 'storage';
 
 var init = function () {
 	logger.info('[general_process.init]')
