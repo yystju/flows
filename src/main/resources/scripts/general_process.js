@@ -21,20 +21,26 @@ var init = function () {
 	
 	logger.info('taskId : {}', taskId)
 	
+	//TODO: Where to get the type??
 	var type = 'isolation'
-	
-	var entity = tahara
-		.find(PLUGIN, DEFINITION)
-		.eq('processId', processId)
-		.uniqueResult()
+	//var type = 'scrapping'
+	//var type = 'rework'
 		
-	logger.info('entity : {}', entity)
-	
-	type = entity.processType
-	
 	logger.info('type : {}', type)
 	
 	execution.setVariable('type', type)
+		
+	var dd = tahara.find(PLUGIN, DEFINITION)
+	
+	var entity = dd.create();
+	
+	entity.setField("processId", processId);
+	entity.setField("var1", isolation);
+	entity.setField('owner', tahara.currentUser());
+		
+	logger.info('entity : {}', entity)
+	
+	dd.save(entity);
 }
 
 //-------------------- GATEWAYS -------------------------
