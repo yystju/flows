@@ -189,6 +189,7 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 		public FakeEntity(String pluginName, String modelName) {
 			this.pluginName = pluginName;
 			this.modelName = modelName;
+			this.data = new HashMap<>();
 		}
 		
 		public void setField(String name, Object value) {

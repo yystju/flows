@@ -33,7 +33,7 @@ var init = function () {
 	var entity = tahara.create(PLUGIN, DEFINITION);
 	
 	entity.setField("processId", processId);
-	entity.setField("var1", isolation);
+	entity.setField("var1", type);
 	entity.setField('owner', tahara.currentUser());
 		
 	logger.info('entity : {}', entity)
@@ -224,6 +224,11 @@ var doScrapping = function() {
 var finalizeForRejection = function() {
 	logger.info('[general_process.finalizeForRejection]')
 	//更新隔离报废一览审批状态为“未通过”
+}
+
+var finalizeForApproved = function() {
+	logger.info('[general_process.finalizeForApproved]')
+	//更新隔离一览审批状态为“通过”
 }
 
 var finalize = function() {
