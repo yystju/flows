@@ -1,4 +1,7 @@
 var data = {
+		'workflows_storage': {
+			processType: 'isolation'
+		},
 		'quality_approvalprocess': [
 			{
 				processType: 'isolation'

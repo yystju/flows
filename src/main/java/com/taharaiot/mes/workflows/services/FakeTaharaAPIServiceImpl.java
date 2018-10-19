@@ -1,9 +1,11 @@
 package com.taharaiot.mes.workflows.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -111,11 +113,9 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 		
 		Object value = this.data.get(key);
 		
-		if(value instanceof List) {
-			return new CriteriaImpl((List)value);
-		} else {
-			return null;
-		}
+		FakeEntity entity = new FakeEntity(pluginName, modelName);
+		entity.data = (HashMap<String, Object>)value;
+		return new CriteriaImpl(entity);
     }
 	
 	@Override
@@ -125,10 +125,10 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 	}
 
     public static class CriteriaImpl implements TaharaAPIService.Criteria {
-    	List<Object> data = null;
+    	private FakeEntity entity;
     	
-        public CriteriaImpl(List<Object> data) {
-        	this.data = data;
+        public CriteriaImpl(FakeEntity entity) {
+        	this.entity = entity;
         }
 
         public Criteria eq(String key, Object value) {
@@ -164,16 +164,18 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
         }
 
         public int count() {
-        	return this.data != null ? this.data.size() : 0;
+        	return 1;
         }
 
         public List<Object> list() {
-        	return this.data;
+        	ArrayList<Object> objs = new ArrayList<>();
+        	objs.add(this.entity);
+        	return objs;
         }
 
 		@Override
 		public Object uniqueResult() {
-			return this.data.get(0);
+			return this.entity;
 		}
     }
 

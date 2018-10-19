@@ -170,7 +170,11 @@ var isolation_approval_result_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
+	logger.info('tahara.find(PLUGIN, DEFINITION) : {}', tahara.find(PLUGIN, DEFINITION))
+	
 	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	
+	logger.info('storage : {}', storage)
 	
 	if(storage) {
 		var var2 = storage.getStringField('var2') // var2 -> 隔离审批结果1
@@ -188,7 +192,7 @@ var isolation_approval_result_gateway = function() {
 	
 	logger.info('result : {}', result)
 	
-	execution.setVariable('isoliationapproval', result)
+	execution.setVariable('isoliationapproval', result.toString())
 }
 
 var rework_approval_result_gateway = function() {
@@ -220,7 +224,7 @@ var rework_approval_result_gateway = function() {
 	
 	logger.info('result : {}', result)
 	
-	execution.setVariable('reworkapproval', result)
+	execution.setVariable('reworkapproval', result.toString())
 }
 
 //-------------------- END EVENTS -------------------------
