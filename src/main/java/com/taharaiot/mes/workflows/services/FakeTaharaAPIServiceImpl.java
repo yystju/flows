@@ -120,6 +120,7 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 	
 	@Override
 	public Object save(String pluginName, String modelName, Object entity) {
+		logger.info(String.format("Entity [%s.%s] saved.", pluginName, modelName));
 		return entity;
 	}
 
@@ -195,10 +196,21 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 		public void setField(String name, Object value) {
 			this.data.put(name, value);
 		}
+		
+		public String getStringField(String name) {
+			return String.valueOf(this.data.get(name));
+		}
 	}
 
 	@Override
 	public Object create(String pluginName, String modelName) {
+		logger.info(String.format("Entity [%s.%s] create.", pluginName, modelName));
 		return new FakeEntity(pluginName, modelName);
+	}
+
+	@Override
+	public boolean delete(String pluginName, String modelName, Object entity) {
+		logger.info(String.format("Entity [%s.%s] deleted.", pluginName, modelName));
+		return true;
 	}
 }

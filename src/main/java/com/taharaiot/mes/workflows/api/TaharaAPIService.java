@@ -8,6 +8,7 @@ public interface TaharaAPIService {
 	Criteria find(String pluginName, String modelName);
 	Object save(String pluginName, String modelName, Object entity);
 	Object create(String pluginName, String modelName);
+	boolean delete(String pluginName, String modelName, Object entity);
 	
 	interface Criteria {
 		Criteria eq(String key, Object value);
