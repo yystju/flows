@@ -13,7 +13,7 @@
         </activiti:executionListener>
       </extensionElements>
     </startEvent>
-    <userTask id="firstlevel_approval_task" name="一级审批批准">
+    <userTask id="firstlevel_approval_task" name="一级审批批准" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <documentation>TODO: 
 1. 修改 “生产主管” 所对应的组。
 2. 修改formkey.</documentation>
@@ -23,7 +23,7 @@
     <sequenceFlow id="flow_scrapping" name="报废审批" sourceRef="approval_type_gateway" targetRef="firstlevel_approval_task">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${'scrapping' == type}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="isolation_approval_role2_task" name="角色2审批"></userTask>
+    <userTask id="isolation_approval_role2_task" name="角色2审批" activiti:candidateGroups="ROLE_WORKFLOW_USER"></userTask>
     <exclusiveGateway id="firstlevel_approval_result_gateway" name="一级审批是否通过">
       <extensionElements>
         <activiti:executionListener event="start" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
@@ -36,19 +36,19 @@
     <sequenceFlow id="flow_isolation" name="隔离审批" sourceRef="approval_type_gateway" targetRef="isolation_review_fork_parallel_gateway">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type == 'isolation'}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="rework_approval_role1_task" name="返工角色1审批"></userTask>
+    <userTask id="rework_approval_role1_task" name="返工角色1审批" activiti:candidateGroups="ROLE_WORKFLOW_USER"></userTask>
     <sequenceFlow id="flow_rework" name="返工审批" sourceRef="approval_type_gateway" targetRef="rework_review_fork_parallel_gateway">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type == 'rework'}]]></conditionExpression>
     </sequenceFlow>
     <parallelGateway id="isolation_review_fork_parallel_gateway" name="Parallel Gateway"></parallelGateway>
-    <userTask id="isolation_approval_role1_task" name="角色1审批"></userTask>
+    <userTask id="isolation_approval_role1_task" name="角色1审批" activiti:candidateGroups="ROLE_WORKFLOW_USER"></userTask>
     <sequenceFlow id="flow2" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role1_task"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role2_task"></sequenceFlow>
     <parallelGateway id="rework_review_fork_parallel_gateway" name="Parallel Gateway"></parallelGateway>
-    <userTask id="rework_approval_role2_task" name="返工角色2审批"></userTask>
+    <userTask id="rework_approval_role2_task" name="返工角色2审批" activiti:candidateGroups="ROLE_WORKFLOW_USER"></userTask>
     <sequenceFlow id="flow4" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role1_task"></sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role2_task"></sequenceFlow>
-    <userTask id="secondlevel_approval_task" name="二级审批批准">
+    <userTask id="secondlevel_approval_task" name="二级审批批准" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <documentation>TODO: 
 1. 修改 “指定部门经理” 所对应的组。
 2. 修改formkey.</documentation>
@@ -60,7 +60,7 @@
     <sequenceFlow id="flow8" sourceRef="rework_approval_role1_task" targetRef="rework_review_join_parallel_gateway"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="rework_approval_role2_task" targetRef="rework_review_join_parallel_gateway"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="firstlevel_approval_task" targetRef="firstlevel_approval_result_gateway"></sequenceFlow>
-    <userTask id="thirdlevel_approval_task" name="三级审批批准">
+    <userTask id="thirdlevel_approval_task" name="三级审批批准" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <documentation>TODO: 
 1. 修改 “指定副总” 所对应的组。
 2. 修改formkey.</documentation>
