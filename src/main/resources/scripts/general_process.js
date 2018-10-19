@@ -329,6 +329,7 @@ var finalize = function() {
 	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
+		logger.info('Delete storage with processId = {}.', processId)
 		tahara.delete(PLUGIN, DEFINITION, storage)
 	}
 	
