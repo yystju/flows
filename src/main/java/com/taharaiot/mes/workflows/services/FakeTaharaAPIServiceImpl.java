@@ -215,4 +215,9 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 		logger.info(String.format("Entity [%s.%s] deleted.", pluginName, modelName));
 		return true;
 	}
+
+	@Override
+	public List<String> currentUserRoles() {
+		return Arrays.asList(new String[] {"WORKFLOW_USER_ROLE"});
+	}
 }
