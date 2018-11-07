@@ -7,8 +7,19 @@
 
 //-------------------- INITIALIZATION -------------------------
 
-var PLUGIN = 'workflows';
-var DEFINITION = 'storage';
+var WORKFLOW = 'workflows';
+var STORAGE = 'storage';
+
+var QUALITY = 'quality';
+
+var ISOLATE = 'defectIsolate';
+var ISOLATEDETAIL = 'DefectIsolatedDetail';
+
+var REMANUFACTURE = 'IsolatedReManufacture';
+var REMANUFACTUREDETAIL = 'IsolatedReManufactureDetail';
+
+var SCRAP = 'IsolatedScrap';
+var SCRAPDETAIL = 'IsolatedScrapDetail';
 
 var init = function () {
 	logger.info('[general_process.init]')
@@ -22,15 +33,17 @@ var init = function () {
 	logger.info('taskId : {}', taskId)
 	
 	//TODO: Where to get the type??
-	var type = 'isolation'
+	//var type = 'isolation'
 	//var type = 'scrapping'
 	//var type = 'rework'
 		
+	//execution.setVariable('type', type)
+	
+	var type = execution.getVariable('type')
+		
 	logger.info('type : {}', type)
 	
-	execution.setVariable('type', type)
-	
-	var entity = tahara.create(PLUGIN, DEFINITION)
+	var entity = tahara.create(WORKFLOW, STORAGE)
 	
 	entity.setField("processId", processId)
 	entity.setField("var1", type)                            // var1 -> 审批类型
@@ -38,7 +51,7 @@ var init = function () {
 		
 	logger.info('entity : {}', entity)
 	
-	tahara.save(PLUGIN, DEFINITION, entity)
+	tahara.save(WORKFLOW, STORAGE, entity)
 }
 
 //-------------------- GATEWAYS -------------------------
@@ -54,7 +67,7 @@ var firstlevel_approval_result_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
 		result = new Boolean(storage.getStringField('var2')) // var2 -> 一级审批结果
@@ -77,7 +90,7 @@ var secondlevel_trigger_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult();
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
 	
 	if(storage) {
 		var pcbCount =  new Number(storage.getStringField('var3')) //var3 -> 累计报废同产品子板条码数
@@ -101,7 +114,7 @@ var secondlevel_approval_result_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult();
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
 	
 	if(storage) {
 		result = new Boolean(storage.getStringField('var4')) // var4 -> 二级审批结果
@@ -124,7 +137,7 @@ var thirdlevel_trigger_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
 		var pcbCount =  new Number(storage.getStringField('var3')) //var3 -> 累计报废同产品子板条码数
@@ -148,7 +161,7 @@ var thirdlevel_approval_result_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
 		result = new Boolean(storage.getStringField('var5')) // var5 -> 三级审批结果
@@ -170,9 +183,9 @@ var isolation_approval_result_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	logger.info('tahara.find(PLUGIN, DEFINITION) : {}', tahara.find(PLUGIN, DEFINITION))
+	logger.info('tahara.find(WORKFLOW, STORAGE) : {}', tahara.find(WORKFLOW, STORAGE))
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	logger.info('storage : {}', storage)
 	
@@ -206,7 +219,7 @@ var rework_approval_result_gateway = function() {
 	
 	logger.info('processId : {}', processId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
 		var var2 = storage.getStringField('var2') // var2 -> 返工审批结果1
@@ -330,11 +343,11 @@ var finalize = function() {
 	
 	logger.info('taskId : {}', taskId)
 	
-	var storage = tahara.find(PLUGIN, DEFINITION).eq('processId', processId).uniqueResult()
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
 		logger.info('Delete storage with processId = {}.', processId)
-		tahara.delete(PLUGIN, DEFINITION, storage)
+		tahara.delete(WORKFLOW, STORAGE, storage)
 	}
 	
 	//删除审批流ApprovalProcess

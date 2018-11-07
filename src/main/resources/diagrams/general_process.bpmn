@@ -13,7 +13,7 @@
         </activiti:executionListener>
       </extensionElements>
     </startEvent>
-    <userTask id="firstlevel_approval_task" name="一级审批批准" activiti:candidateGroups="ROLE_WORKFLOW_USER">
+    <userTask id="firstlevel_approval_task" name="一级审批批准 (PCS &lt;= 20)" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <documentation>TODO: 
 1. 修改 “生产主管” 所对应的组。
 2. 修改formkey.</documentation>
@@ -48,7 +48,7 @@
     <userTask id="rework_approval_role2_task" name="返工角色2审批" activiti:candidateGroups="ROLE_WORKFLOW_USER"></userTask>
     <sequenceFlow id="flow4" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role1_task"></sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role2_task"></sequenceFlow>
-    <userTask id="secondlevel_approval_task" name="二级审批批准" activiti:candidateGroups="ROLE_WORKFLOW_USER">
+    <userTask id="secondlevel_approval_task" name="一级审批批准 (20&lt; PCS &lt;= 50)" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <documentation>TODO: 
 1. 修改 “指定部门经理” 所对应的组。
 2. 修改formkey.</documentation>
@@ -60,7 +60,7 @@
     <sequenceFlow id="flow8" sourceRef="rework_approval_role1_task" targetRef="rework_review_join_parallel_gateway"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="rework_approval_role2_task" targetRef="rework_review_join_parallel_gateway"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="firstlevel_approval_task" targetRef="firstlevel_approval_result_gateway"></sequenceFlow>
-    <userTask id="thirdlevel_approval_task" name="三级审批批准" activiti:candidateGroups="ROLE_WORKFLOW_USER">
+    <userTask id="thirdlevel_approval_task" name="二级审批批准 (PCS &gt; 50)" activiti:candidateGroups="ROLE_WORKFLOW_USER">
       <documentation>TODO: 
 1. 修改 “指定副总” 所对应的组。
 2. 修改formkey.</documentation>
@@ -313,7 +313,7 @@
         <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="60.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="firstlevel_approval_task" id="BPMNShape_firstlevel_approval_task">
-        <omgdc:Bounds height="55.0" width="105.0" x="65.0" y="280.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="136.0" x="50.0" y="272.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="approval_type_gateway" id="BPMNShape_approval_type_gateway">
         <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="160.0"></omgdc:Bounds>
@@ -340,7 +340,7 @@
         <omgdc:Bounds height="55.0" width="105.0" x="1460.0" y="374.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="secondlevel_approval_task" id="BPMNShape_secondlevel_approval_task">
-        <omgdc:Bounds height="55.0" width="105.0" x="65.0" y="567.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="166.0" x="35.0" y="567.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="isolation_review_join_parallel_gateway" id="BPMNShape_isolation_review_join_parallel_gateway">
         <omgdc:Bounds height="40.0" width="40.0" x="750.0" y="477.0"></omgdc:Bounds>
@@ -349,7 +349,7 @@
         <omgdc:Bounds height="40.0" width="40.0" x="1420.0" y="477.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="thirdlevel_approval_task" id="BPMNShape_thirdlevel_approval_task">
-        <omgdc:Bounds height="55.0" width="105.0" x="65.0" y="860.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="141.0" x="47.0" y="863.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="secondlevel_approval_result_gateway" id="BPMNShape_secondlevel_approval_result_gateway">
         <omgdc:Bounds height="40.0" width="40.0" x="97.0" y="677.0"></omgdc:Bounds>
@@ -447,7 +447,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow_scrapping" id="BPMNEdge_flow_scrapping">
         <omgdi:waypoint x="117.0" y="200.0"></omgdi:waypoint>
-        <omgdi:waypoint x="117.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="118.0" y="272.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="16.0" width="44.0" x="117.0" y="219.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
@@ -509,11 +509,11 @@
         <omgdi:waypoint x="1460.0" y="497.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
-        <omgdi:waypoint x="117.0" y="335.0"></omgdi:waypoint>
+        <omgdi:waypoint x="118.0" y="327.0"></omgdi:waypoint>
         <omgdi:waypoint x="117.0" y="388.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
-        <omgdi:waypoint x="117.0" y="622.0"></omgdi:waypoint>
+        <omgdi:waypoint x="118.0" y="622.0"></omgdi:waypoint>
         <omgdi:waypoint x="117.0" y="677.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow_secondlevel_approved" id="BPMNEdge_flow_secondlevel_approved">
@@ -539,7 +539,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow_secondlevel_triggerred" id="BPMNEdge_flow_secondlevel_triggerred">
         <omgdi:waypoint x="117.0" y="517.0"></omgdi:waypoint>
-        <omgdi:waypoint x="117.0" y="567.0"></omgdi:waypoint>
+        <omgdi:waypoint x="118.0" y="567.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="517.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
@@ -560,7 +560,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow_thirdlevel_triggerred" id="BPMNEdge_flow_thirdlevel_triggerred">
         <omgdi:waypoint x="117.0" y="810.0"></omgdi:waypoint>
-        <omgdi:waypoint x="117.0" y="860.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="863.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="16.0" width="22.0" x="117.0" y="810.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
@@ -573,7 +573,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
-        <omgdi:waypoint x="117.0" y="915.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="918.0"></omgdi:waypoint>
         <omgdi:waypoint x="117.0" y="960.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow_thirlevel_approved" id="BPMNEdge_flow_thirlevel_approved">
