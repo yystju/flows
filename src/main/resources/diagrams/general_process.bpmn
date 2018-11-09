@@ -25,11 +25,11 @@
     </sequenceFlow>
     <userTask id="isolation_approval_role2_task" name="角色2审批" activiti:candidateGroups="ROLE_WORKFLOW_4">
       <extensionElements>
-        <activiti:taskListener event="complete" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[general_process.js]]></activiti:string>
           </activiti:field>
-        </activiti:taskListener>
+        </activiti:executionListener>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="firstlevel_approval_result_gateway" name="一级审批是否通过">
@@ -46,11 +46,11 @@
     </sequenceFlow>
     <userTask id="rework_approval_role1_task" name="返工角色1审批" activiti:candidateGroups="ROLE_WORKFLOW_3">
       <extensionElements>
-        <activiti:taskListener event="complete" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[general_process.js]]></activiti:string>
           </activiti:field>
-        </activiti:taskListener>
+        </activiti:executionListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow_rework" name="返工审批" sourceRef="approval_type_gateway" targetRef="rework_review_fork_parallel_gateway">
@@ -59,11 +59,11 @@
     <parallelGateway id="isolation_review_fork_parallel_gateway" name="Parallel Gateway"></parallelGateway>
     <userTask id="isolation_approval_role1_task" name="角色1审批" activiti:candidateGroups="ROLE_WORKFLOW_3">
       <extensionElements>
-        <activiti:taskListener event="create" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[general_process.js]]></activiti:string>
           </activiti:field>
-        </activiti:taskListener>
+        </activiti:executionListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow2" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role1_task"></sequenceFlow>
@@ -71,11 +71,11 @@
     <parallelGateway id="rework_review_fork_parallel_gateway" name="Parallel Gateway"></parallelGateway>
     <userTask id="rework_approval_role2_task" name="返工角色2审批" activiti:candidateGroups="ROLE_WORKFLOW_4">
       <extensionElements>
-        <activiti:taskListener event="complete" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
           <activiti:field name="scriptPathName">
             <activiti:string><![CDATA[general_process.js]]></activiti:string>
           </activiti:field>
-        </activiti:taskListener>
+        </activiti:executionListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow4" sourceRef="rework_review_fork_parallel_gateway" targetRef="rework_approval_role1_task"></sequenceFlow>
