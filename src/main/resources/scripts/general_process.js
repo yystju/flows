@@ -432,7 +432,7 @@ var firstlevel_reject_end = function() {
 var firstlevel_accepted_end = function() {
 	logger.info('[general_process.firstlevel_accepted_end]')
 	doScrapping()
-	finalizeForApproved()
+	finalizeScrappingForApproved()
 	finalize()
 }
 
@@ -445,7 +445,7 @@ var secondlevel_reject_end = function() {
 var secondlevel_accepted_end = function() {
 	logger.info('[general_process.secondlevel_accepted_end]')
 	doScrapping()
-	finalizeForApproved()
+	finalizeScrappingForApproved()
 	finalize()
 }
 
@@ -458,7 +458,7 @@ var thirdlevel_reject_end = function() {
 var thirdlevel_accepted_end = function() {
 	logger.info('[general_process.thirdlevel_accepted_end]')
 	doScrapping()
-	finalizeForApproved()
+	finalizeScrappingForApproved()
 	finalize()
 }
 
@@ -479,8 +479,7 @@ var isolation_reject_end = function() {
 	isolation.setField('approvedstate', '2')
 	
 	tahara.save('quality', 'DefectIsolate', isolation)
-	
-	finalizeForRejection()
+
 	finalize()
 }
 
@@ -502,19 +501,48 @@ var isolation_accepted_end = function() {
 	
 	tahara.save('quality', 'DefectIsolate', isolation)
 	
-	finalizeForApproved()
 	finalize()
 }
 
 var rework_reject_end = function() {
 	logger.info('[general_process.rework_reject_end]')
-	finalizeForRejection()
+	
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var approvalProcess = tahara.find('quality', 'ApprovalProcess').eq('processid', processId).uniqueResult()
+	
+	logger.info('approvalProcess : {}', approvalProcess)
+	
+	var rework = tahara.find('quality', 'IsolatedReManufacture').eq('code', approvalProcess.getStringField('approvalnumber')).uniqueResult()
+	
+	logger.info('rework : {}', rework)
+	
+	rework.setField('approvedstate', '2')
+	
+	tahara.save('quality', 'IsolatedReManufacture', rework)
+	
 	finalize()
 }
 
 var rework_accepted_end = function() {
 	logger.info('[general_process.rework_accepted_end]')
-	finalizeForApproved()
+	
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var approvalProcess = tahara.find('quality', 'ApprovalProcess').eq('processid', processId).uniqueResult()
+	
+	logger.info('approvalProcess : {}', approvalProcess)
+	
+	var rework = tahara.find('quality', 'IsolatedReManufacture').eq('code', approvalProcess.getStringField('approvalnumber')).uniqueResult()
+	
+	logger.info('rework : {}', rework)
+	
+	rework.setField('approvedstate', '1')
+	
+	tahara.save('quality', 'IsolatedReManufacture', rework)
+	
 	finalize()
 }
 
@@ -531,18 +559,42 @@ var doScrapping = function() {
 	// TODO: Add implementations...
 }
 
-var finalizeForRejection = function() {
-	logger.info('[general_process.finalizeForRejection]')
-	// 更新隔离报废一览审批状态为“未通过”
+var finalizeScrappingForRejection = function() {
+	logger.info('[general_process.finalizeScrappingForRejection]')
 	
-	// TODO: Add implementations...
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var approvalProcess = tahara.find('quality', 'ApprovalProcess').eq('processid', processId).uniqueResult()
+	
+	logger.info('approvalProcess : {}', approvalProcess)
+	
+	var scrap = tahara.find('quality', 'IsolatedScrap').eq('code', approvalProcess.getStringField('approvalnumber')).uniqueResult()
+	
+	logger.info('scrap : {}', scrap)
+	
+	scrap.setField('approvedstate', '2')
+	
+	tahara.save('quality', 'IsolatedScrap', scrap)
 }
 
-var finalizeForApproved = function() {
-	logger.info('[general_process.finalizeForApproved]')
-	// 更新隔离一览审批状态为“通过”
+var finalizeScrappingForApproved = function() {
+	logger.info('[general_process.finalizeScrappingForApproved]')
 	
-	// TODO: Add implementations...
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var approvalProcess = tahara.find('quality', 'ApprovalProcess').eq('processid', processId).uniqueResult()
+	
+	logger.info('approvalProcess : {}', approvalProcess)
+	
+	var scrap = tahara.find('quality', 'IsolatedScrap').eq('code', approvalProcess.getStringField('approvalnumber')).uniqueResult()
+	
+	logger.info('scrap : {}', scrap)
+	
+	scrap.setField('approvedstate', '1')
+	
+	tahara.save('quality', 'IsolatedScrap', scrap)
 }
 
 var finalize = function() {
