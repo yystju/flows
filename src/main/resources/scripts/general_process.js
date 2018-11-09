@@ -554,13 +554,60 @@ var doScrapping = function() {
 	// 更新制品信息表(状态，品质)
 	// FinishedProduct{...,"3"，"1",..}
 	// 删除在制品表wip
-	// 更新隔离报废一览审批状态为“通过”
 	
-	// TODO: Add implementations...
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var approvalProcess = tahara.find('quality', 'ApprovalProcess').eq('processid', processId).uniqueResult()
+	logger.info('approvalProcess : {}', approvalProcess)
+	
+	var scrap = tahara.find('quality', 'IsolatedScrap').eq('code', approvalProcess.getStringField('approvalnumber')).uniqueResult()
+	logger.info('scrap : {}', scrap)
+	
+	tahara
+		.find('quality', 'IsolatedScrapDetail')
+		.belongs2('isolatedScrap', 'quality', 'IsolatedScrap', scrap.getId())
+		.list()
+		.forEach(function(detail) {
+			var wipno = detail.getStringField('wipno')
+			
+			logger.info('wipno : {}', wipno)
+			
+			var finishedProduct = tahara.find('exec', 'finishedProduct').eq('wipno', wipno).uniqueResult()
+			var wip = tahara.find('exec', 'wip').eq('wipno', wipno).uniqueResult()
+			
+			var entity = tahara.create('exec', 'scrap')
+			
+			entity.setField('wipno', wipno)
+			
+			var systemid = wip.getStringField('systemid')
+			var product = wip.getBelongsToField('product')
+			var manufacturelot = wip.getBelongsToField('manufacturelot')
+			
+			
+			entity.setField('systemid', systemid)
+			entity.setField('product', product)
+			entity.setField('manufacturelot', manufacturelot)
+			
+			entity.setField('quality', 1) //0：打叉 1：报废
+			entity.setField('createdby', tahara.currentUser())
+			entity.setField('created', new Date())
+			entity.setField('modifiedby', tahara.currentUser())
+			entity.setField('modified', new Date())
+			
+			tahara.save('exec', 'scrap', entity)
+			
+			finishedProduct.setField('state', '59') //0：初始化 20：生产中 21：跳出中 22：已下线 39：已入库 56：待隔离 57：已隔离 58：待返工 59：已报废 69：已打叉 79：已领用
+			tahara.save('exec', 'finishedProduct', finishedProduct)
+			
+			tahara.save('exec', 'wip', wip)
+		})  
 }
 
 var finalizeScrappingForRejection = function() {
 	logger.info('[general_process.finalizeScrappingForRejection]')
+	
+	// 更新隔离报废一览审批状态为“拒绝”
 	
 	var processId = execution.getProcessInstanceId()
 	logger.info('processId : {}', processId)
@@ -580,6 +627,8 @@ var finalizeScrappingForRejection = function() {
 
 var finalizeScrappingForApproved = function() {
 	logger.info('[general_process.finalizeScrappingForApproved]')
+	
+	// 更新隔离报废一览审批状态为“通过”
 	
 	var processId = execution.getProcessInstanceId()
 	logger.info('processId : {}', processId)
