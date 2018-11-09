@@ -32,13 +32,6 @@ var init = function () {
 	
 	logger.info('taskId : {}', taskId)
 	
-	//TODO: Where to get the type??
-	//var type = 'isolation'
-	//var type = 'scrapping'
-	//var type = 'rework'
-		
-	//execution.setVariable('type', type)
-	
 	var type = execution.getVariable('type')
 		
 	logger.info('type : {}', type)
@@ -52,6 +45,8 @@ var init = function () {
 	logger.info('entity : {}', entity)
 	
 	tahara.save(WORKFLOW, STORAGE, entity)
+	
+	logger.info('[general_process.init] done.')
 }
 
 //-------------------- GATEWAYS -------------------------
@@ -245,6 +240,16 @@ var isolation_approval_role1_task = function() {
 	
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var2 -> 隔离审批结果1
+		storage.setField('var2', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
 }
 
 var isolation_approval_role2_task = function() {
@@ -252,6 +257,16 @@ var isolation_approval_role2_task = function() {
 	
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var3 -> 隔离审批结果2
+		storage.setField('var3', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
 }
 
 var rework_approval_role1_task = function() {
@@ -259,6 +274,16 @@ var rework_approval_role1_task = function() {
 	
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var2 -> 返工审批结果1
+		storage.setField('var2', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
 }
 
 var rework_approval_role2_task = function() {
@@ -266,6 +291,16 @@ var rework_approval_role2_task = function() {
 	
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var3 -> 返工审批结果2
+		storage.setField('var3', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
 }
 
 //-------------------- END EVENTS -------------------------
