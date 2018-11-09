@@ -392,7 +392,11 @@ var isolation_accepted_end = function() {
 	var processId = execution.getProcessInstanceId()
 	logger.info('processId : {}', processId)
 	
-	var isolation = tahara.find('quality', 'DefectIsolate').eq('processid', processId).uniqueResult()
+	var approvalProcess = tahara.find('quality', 'ApprovalProcess').eq('processid', processId).uniqueResult()
+	
+	logger.info('approvalProcess : {}', approvalProcess)
+	
+	var isolation = tahara.find('quality', 'DefectIsolate').eq('code', approvalProcess.getStringField('code')).uniqueResult()
 	
 	logger.info('isolation : {}', isolation)
 	
