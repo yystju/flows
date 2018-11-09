@@ -37,15 +37,15 @@ var init = function () {
 	
 	var entity = tahara.create(WORKFLOW, STORAGE)
 	
-	entity.setField("processId", processId)
-	entity.setField("var1", type)                            // var1 -> 审批类型
+	entity.setField("processId", '' + processId)
+	entity.setField("var1", '' + type)                            // var1 -> 审批类型
 	
 	if('scrapping' == type) {
 		var num = execution.getVariable('num')
 		
 		logger.info('num : {}', num)
 		
-		entity.setField("var3", num)
+		entity.setField("var3", '' + num)
 	}
 	
 	entity.setField('owner', tahara.currentUser())
@@ -80,6 +80,8 @@ var firstlevel_approval_result_gateway = function() {
 		result = ('true' == var2)
 	}
 	
+	result = '' + result
+	
 	logger.info('result : {}', result)
 	
 	execution.setVariable('firstlevelapproval', result)
@@ -107,6 +109,8 @@ var secondlevel_trigger_gateway = function() {
 		result = (pcbCount >= 20)
 	}
 	
+	result = '' + result
+	
 	logger.info('result : {}', result)
 	
 	execution.setVariable('secondleveltriggerred', result)
@@ -132,6 +136,8 @@ var secondlevel_approval_result_gateway = function() {
 		
 		result = ('true' == var4)
 	}
+	
+	result = '' + result
 	
 	logger.info('result : {}', result)
 	
@@ -160,6 +166,8 @@ var thirdlevel_trigger_gateway = function() {
 		result = (pcbCount >= 50)
 	}
 	
+	result = '' + result
+	
 	logger.info('result : {}', result)
 	
 	execution.setVariable('thirdleveltriggerred', result)
@@ -185,6 +193,8 @@ var thirdlevel_approval_result_gateway = function() {
 		
 		result = ('true' == var5)
 	}
+	
+	result = '' + result
 	
 	logger.info('result : {}', result)
 	
@@ -226,6 +236,8 @@ var isolation_approval_result_gateway = function() {
 		}
 	}
 	
+	result = '' + result
+	
 	logger.info('result : {}', result)
 	
 	execution.setVariable('isoliationapproval', result.toString())
@@ -261,6 +273,8 @@ var rework_approval_result_gateway = function() {
 			result = result && ('true' == var3)
 		}
 	}
+	
+	result = '' + result
 	
 	logger.info('result : {}', result)
 	
