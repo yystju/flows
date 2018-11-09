@@ -39,6 +39,15 @@ var init = function () {
 	
 	entity.setField("processId", processId)
 	entity.setField("var1", type)                            // var1 -> 审批类型
+	
+	if('scrapping' == type) {
+		var num = execution.getVariable('num')
+		
+		logger.info('num : {}', num)
+		
+		entity.setField("var3", num)
+	}
+	
 	entity.setField('owner', tahara.currentUser())
 		
 	logger.info('entity : {}', entity)
@@ -55,7 +64,7 @@ var firstlevel_approval_result_gateway = function() {
 	
 	// 从数据库ApprovalProcess获得一级审批结果。
 	
-	var result = true
+	var result = false
 	
 	var processId = execution.getProcessInstanceId()
 	
@@ -64,8 +73,11 @@ var firstlevel_approval_result_gateway = function() {
 	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
-		result = new Boolean(storage.getStringField('var2')) // var2 ->
-																// 一级审批结果
+		var var2 = storage.getStringField('var2') // var2 -> 一级审批结果
+		
+		logger.info('var2 : {}', var2)
+		
+		result = ('true' == var2)
 	}
 	
 	logger.info('result : {}', result)
@@ -79,7 +91,7 @@ var secondlevel_trigger_gateway = function() {
 	// 获取阈值
 	// 查看报废审批明细：累计报废同产品子板条码数[20，50]?
 	
-	var result = true
+	var result = false
 	
 	var processId = execution.getProcessInstanceId()
 	
@@ -88,8 +100,9 @@ var secondlevel_trigger_gateway = function() {
 	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
 	
 	if(storage) {
-		var pcbCount =  new Number(storage.getStringField('var3')) // var3 ->
-																	// 累计报废同产品子板条码数
+		var pcbCount =  new Number(storage.getStringField('var3')) // var3 -> 累计报废同产品子板条码数
+		
+		logger.info('pcbCount : {}', pcbCount)
 		
 		result = (pcbCount >= 20)
 	}
@@ -113,8 +126,11 @@ var secondlevel_approval_result_gateway = function() {
 	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
 	
 	if(storage) {
-		result = new Boolean(storage.getStringField('var4')) // var4 ->
-																// 二级审批结果
+		var var4 = storage.getStringField('var4') // var4 -> 二级审批结果
+		
+		logger.info('var4 : {}', var4)
+		
+		result = ('true' == var4)
 	}
 	
 	logger.info('result : {}', result)
@@ -137,8 +153,9 @@ var thirdlevel_trigger_gateway = function() {
 	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
-		var pcbCount =  new Number(storage.getStringField('var3')) // var3 ->
-																	// 累计报废同产品子板条码数
+		var pcbCount =  new Number(storage.getStringField('var3')) // var3 -> 累计报废同产品子板条码数
+		
+		logger.info('pcbCount : {}', pcbCount)
 		
 		result = (pcbCount >= 50)
 	}
@@ -162,8 +179,11 @@ var thirdlevel_approval_result_gateway = function() {
 	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	if(storage) {
-		result = new Boolean(storage.getStringField('var5')) // var5 ->
-																// 三级审批结果
+		var var5 = storage.getStringField('var5') // var5 -> 三级审批结果
+		
+		logger.info('var5 : {}', var5)
+		
+		result = ('true' == var5)
 	}
 	
 	logger.info('result : {}', result)
@@ -245,6 +265,66 @@ var rework_approval_result_gateway = function() {
 	logger.info('result : {}', result)
 	
 	execution.setVariable('reworkapproval', result.toString())
+}
+
+var firstlevel_approval_task = function() {
+	logger.info('[general_process.firstlevel_approval_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+	
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var2 -> 一级审批结果
+		storage.setField('var2', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
+}
+
+var secondlevel_approval_task = function() {
+	logger.info('[general_process.secondlevel_approval_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+	
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var4 -> 二级审批结果
+		storage.setField('var4', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
+}
+
+var thirdlevel_approval_task = function() {
+	logger.info('[general_process.thirdlevel_approval_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+	
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var5 -> 三级审批结果
+		storage.setField('var5', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
 }
 
 var isolation_approval_role1_task = function() {
