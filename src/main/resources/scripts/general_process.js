@@ -241,7 +241,10 @@ var isolation_approval_role1_task = function() {
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
 	
-	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	logger.info('storage : {}', storage)
 	
@@ -258,7 +261,10 @@ var isolation_approval_role2_task = function() {
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
 	
-	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	logger.info('storage : {}', storage)
 	
@@ -275,7 +281,10 @@ var rework_approval_role1_task = function() {
 	var approved = execution.getVariable('approved')
 	logger.info('approved : {}', approved)
 	
-	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult();
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
 	
 	logger.info('storage : {}', storage)
 	
