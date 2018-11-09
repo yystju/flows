@@ -240,6 +240,34 @@ var rework_approval_result_gateway = function() {
 	execution.setVariable('reworkapproval', result.toString())
 }
 
+var isolation_approval_role1_task = function() {
+	logger.info('[general_process.isolation_approval_role1_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+}
+
+var isolation_approval_role2_task = function() {
+	logger.info('[general_process.isolation_approval_role2_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+}
+
+var rework_approval_role1_task = function() {
+	logger.info('[general_process.rework_approval_role1_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+}
+
+var rework_approval_role2_task = function() {
+	logger.info('[general_process.rework_approval_role2_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+}
+
 //-------------------- END EVENTS -------------------------
 
 var firstlevel_reject_end = function() {
