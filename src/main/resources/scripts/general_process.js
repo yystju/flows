@@ -187,13 +187,17 @@ var isolation_approval_result_gateway = function() {
 	if(storage) {
 		var var2 = storage.getStringField('var2') // var2 -> 隔离审批结果1
 		
-		if(result && var2) {
+		logger.info('var2 : {}', var2)
+		
+		if(result) {
 			result = result && new Boolean(var2)
 		}
 		
-		var var3 = storage.getStringField('var2') // var3 -> 隔离审批结果2
+		var var3 = storage.getStringField('var3') // var3 -> 隔离审批结果2
 		
-		if(result && var3) {
+		logger.info('var3 : {}', var3)
+		
+		if(result) {
 			result = result && new Boolean(var3)
 		}
 	}
@@ -219,13 +223,17 @@ var rework_approval_result_gateway = function() {
 	if(storage) {
 		var var2 = storage.getStringField('var2') // var2 -> 返工审批结果1
 		
-		if(result && var2) {
+		logger.info('var2 : {}', var2)
+		
+		if(result) {
 			result = result && new Boolean(var2)
 		}
 		
-		var var3 = storage.getStringField('var2') // var3 -> 返工审批结果2
+		var var3 = storage.getStringField('var3') // var3 -> 返工审批结果2
 		
-		if(result && var3) {
+		logger.info('var3 : {}', var3)
+		
+		if(result) {
 			result = result && new Boolean(var3)
 		}
 	}
