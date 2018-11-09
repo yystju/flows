@@ -576,7 +576,7 @@ var doScrapping = function() {
 			var finishedProduct = tahara.find('exec', 'finishedProduct').eq('wipno', wipno).uniqueResult()
 			var wip = tahara.find('exec', 'wip').eq('wipno', wipno).uniqueResult()
 			
-			var entity = tahara.create('exec', 'scrap')
+			var entity = tahara.create('exec', 'scraps')
 			
 			entity.setField('wipno', wipno)
 			
@@ -595,7 +595,7 @@ var doScrapping = function() {
 			entity.setField('modifiedby', tahara.currentUser())
 			entity.setField('modified', new Date())
 			
-			tahara.save('exec', 'scrap', entity)
+			tahara.save('exec', 'scraps', entity)
 			
 			finishedProduct.setField('state', '59') //0：初始化 20：生产中 21：跳出中 22：已下线 39：已入库 56：待隔离 57：已隔离 58：待返工 59：已报废 69：已打叉 79：已领用
 			tahara.save('exec', 'finishedProduct', finishedProduct)
