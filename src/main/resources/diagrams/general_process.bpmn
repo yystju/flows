@@ -308,6 +308,9 @@
     <sequenceFlow id="flow23" name="通过" sourceRef="rework_approval_result_gateway" targetRef="rework_accepted_end">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reworkapproval == true}]]></conditionExpression>
     </sequenceFlow>
+    <userTask id="isolation_approval_role3_task" name="角色3审批" activiti:candidateGroups="ROLE_WORKFLOW_5"></userTask>
+    <sequenceFlow id="flow24" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role3_task"></sequenceFlow>
+    <sequenceFlow id="flow25" sourceRef="isolation_approval_role3_task" targetRef="isolation_review_join_parallel_gateway"></sequenceFlow>
     <textAnnotation id="textannotation2">
       <text>一级审批未批准结束</text>
     </textAnnotation>
@@ -451,6 +454,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="rework_accepted_end" id="BPMNShape_rework_accepted_end">
         <omgdc:Bounds height="35.0" width="35.0" x="1423.0" y="680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isolation_approval_role3_task" id="BPMNShape_isolation_approval_role3_task">
+        <omgdc:Bounds height="55.0" width="105.0" x="920.0" y="374.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="textannotation2" id="BPMNShape_textannotation2">
         <omgdc:Bounds height="50.0" width="121.0" x="260.0" y="384.0"></omgdc:Bounds>
@@ -678,6 +684,16 @@
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="16.0" width="22.0" x="1440.0" y="614.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="790.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="972.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="972.0" y="374.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="972.0" y="429.0"></omgdi:waypoint>
+        <omgdi:waypoint x="973.0" y="497.0"></omgdi:waypoint>
+        <omgdi:waypoint x="790.0" y="497.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

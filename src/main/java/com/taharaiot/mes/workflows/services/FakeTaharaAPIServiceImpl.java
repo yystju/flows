@@ -114,7 +114,14 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 		Object value = this.data.get(key);
 		
 		FakeEntity entity = new FakeEntity(pluginName, modelName);
-		entity.data = (HashMap<String, Object>)value;
+		
+		if(value instanceof HashMap) {
+			entity.data = (HashMap<String, Object>)value;
+		} else if (value instanceof List) {
+			entity.data = (HashMap<String, Object>)((List)value).get(0);
+		}
+		
+		
 		return new CriteriaImpl(entity);
     }
 	

@@ -54,6 +54,9 @@ public class GeneralProcessTests {
 		activitiRule.setCurrentTime(fmt.parse("2018-01-01 00:00:00+08:00"));
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("type", "scrapping");
+		map.put("num", "10");
 
 		ProcessInstance processInstance = activitiRule.getRuntimeService().startProcessInstanceByKey("general_process", map);
 
@@ -70,6 +73,8 @@ public class GeneralProcessTests {
 				activitiRule.getTaskService().claim(task.getId(), "hello");
 				
 				Map<String, Object> taskVariables = activitiRule.getTaskService().getVariables(task.getId());
+				
+				taskVariables.put("approved", "true");
 				
 				activitiRule.getTaskService().complete(task.getId(), taskVariables);
 			}

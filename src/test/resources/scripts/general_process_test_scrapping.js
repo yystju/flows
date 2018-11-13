@@ -14,5 +14,9 @@ var data = {
 				wipno: '12345'
 			}
 		]
+		, 'workflows_storage': [
+			{
+			}
+		]
 };
 data;
