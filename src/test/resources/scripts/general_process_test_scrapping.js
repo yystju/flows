@@ -16,6 +16,11 @@ var data = {
 		]
 		, 'workflows_storage': [
 			{
+				var0: '1234'
+				, var1: 'scrapping'
+				, var2: 'true'
+				, var3: '60'
+				, var4: 'true'
 			}
 		]
 };

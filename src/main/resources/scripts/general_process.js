@@ -426,7 +426,7 @@ var rework_approval_role2_task = function() {
 
 var firstlevel_reject_end = function() {
 	logger.info('[general_process.firstlevel_reject_end]')
-	finalizeForRejection()
+	finalizeScrappingForRejection()
 	finalize()
 }
 
@@ -439,7 +439,7 @@ var firstlevel_accepted_end = function() {
 
 var secondlevel_reject_end = function() {
 	logger.info('[general_process.secondlevel_reject_end]')
-	finalizeForRejection()
+	finalizeScrappingForRejection()
 	finalize()
 }
 
@@ -452,7 +452,7 @@ var secondlevel_accepted_end = function() {
 
 var thirdlevel_reject_end = function() {
 	logger.info('[general_process.thirdlevel_reject_end]')
-	finalizeForRejection()
+	finalizeScrappingForRejection()
 	finalize()
 }
 

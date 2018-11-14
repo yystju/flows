@@ -25,6 +25,8 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 	
 	Map<String, Object> data = null;
 	
+	Map<String, CriteriaImpl> cache = new HashMap<String, CriteriaImpl>();
+	
 	@SuppressWarnings("unchecked")
 	public FakeTaharaAPIServiceImpl() throws Exception {
 		String script = System.getProperty("fake.data.preparation.script");
@@ -111,18 +113,27 @@ public class FakeTaharaAPIServiceImpl implements TaharaAPIService {
 	public Criteria find(String pluginName, String modelName) {
 		String key = String.format("%s_%s", pluginName.trim(), modelName.trim()).toLowerCase();
 		
-		Object value = this.data.get(key);
+		CriteriaImpl criteria = cache.get(key);
 		
-		FakeEntity entity = new FakeEntity(pluginName, modelName);
-		
-		if(value instanceof HashMap) {
-			entity.data = (HashMap<String, Object>)value;
-		} else if (value instanceof List) {
-			entity.data = (HashMap<String, Object>)((List)value).get(0);
+		if(criteria == null) {
+			Object value = this.data.get(key);
+			
+			FakeEntity entity = new FakeEntity(pluginName, modelName);
+			
+			if(value instanceof HashMap) {
+				entity.data = (HashMap<String, Object>)value;
+			} else if (value instanceof List) {
+				entity.data = (HashMap<String, Object>)((List)value).get(0);
+			} else {
+				entity.data = new HashMap<String, Object>();
+			}
+			
+			criteria = new CriteriaImpl(entity);
+			
+			cache.put(key, criteria);
 		}
 		
-		
-		return new CriteriaImpl(entity);
+		return criteria;
     }
 	
 	@Override

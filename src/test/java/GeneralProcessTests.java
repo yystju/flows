@@ -56,7 +56,7 @@ public class GeneralProcessTests {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("type", "scrapping");
-		map.put("num", "10");
+		map.put("num", "60");
 
 		ProcessInstance processInstance = activitiRule.getRuntimeService().startProcessInstanceByKey("general_process", map);
 
