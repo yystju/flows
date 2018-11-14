@@ -382,6 +382,26 @@ var isolation_approval_role2_task = function() {
 	}
 }
 
+var isolation_approval_role3_task = function() {
+	logger.info('[general_process.isolation_approval_role3_task]')
+	
+	var approved = execution.getVariable('approved')
+	logger.info('approved : {}', approved)
+	
+	var processId = execution.getProcessInstanceId()
+	logger.info('processId : {}', processId)
+	
+	var storage = tahara.find(WORKFLOW, STORAGE).eq('processId', processId).uniqueResult()
+	
+	logger.info('storage : {}', storage)
+	
+	if(storage) {
+        // var4 -> 隔离审批结果3
+		storage.setField('var4', '' + approved)
+		tahara.save(WORKFLOW, STORAGE, storage)
+	}
+}
+
 var rework_approval_role1_task = function() {
 	logger.info('[general_process.rework_approval_role1_task]')
 	

@@ -17,5 +17,14 @@ var data = {
 				wipno: '12345'
 			}
 		]
+		, 'workflows_storage': [
+			{
+				var0: '1234'
+				, var1: 'isolation'
+				, var2: 'true'
+				, var3: 'true'
+				, var4: 'true'
+			}
+		]
 };
 data;

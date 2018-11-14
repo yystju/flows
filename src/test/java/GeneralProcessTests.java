@@ -97,6 +97,8 @@ public class GeneralProcessTests {
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
+		map.put("type", "isolation");
+		
 		ProcessInstance processInstance = activitiRule.getRuntimeService().startProcessInstanceByKey("general_process", map);
 
 		assertNotNull(processInstance);
@@ -112,6 +114,8 @@ public class GeneralProcessTests {
 				activitiRule.getTaskService().claim(task.getId(), "hello");
 				
 				Map<String, Object> taskVariables = activitiRule.getTaskService().getVariables(task.getId());
+				
+				taskVariables.put("approved", "true");
 				
 				activitiRule.getTaskService().complete(task.getId(), taskVariables);
 			}

@@ -308,7 +308,15 @@
     <sequenceFlow id="flow23" name="通过" sourceRef="rework_approval_result_gateway" targetRef="rework_accepted_end">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reworkapproval == true}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="isolation_approval_role3_task" name="角色3审批" activiti:candidateGroups="ROLE_WORKFLOW_5"></userTask>
+    <userTask id="isolation_approval_role3_task" name="角色3审批" activiti:candidateGroups="ROLE_WORKFLOW_5">
+      <extensionElements>
+        <activiti:executionListener event="end" class="com.taharaiot.mes.workflows.listeners.ScriptExecutionListener">
+          <activiti:field name="scriptPathName">
+            <activiti:string><![CDATA[general_process.js]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow24" sourceRef="isolation_review_fork_parallel_gateway" targetRef="isolation_approval_role3_task"></sequenceFlow>
     <sequenceFlow id="flow25" sourceRef="isolation_approval_role3_task" targetRef="isolation_review_join_parallel_gateway"></sequenceFlow>
     <textAnnotation id="textannotation2">
